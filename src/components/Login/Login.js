@@ -32,44 +32,7 @@ function Login() {
         setUser((prev) => ({ ...prev, [name]: value }));
     };
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setErrorMsg("");
-
-    //     try {
-    //         const res = await fetch("http://localhost:8000/api/signin/", {
-    //             method: "POST",
-    //             credentials: 'include',
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify(user),
-    //         });
-
-    //         if (!res.ok) {
-    //             const errorData = await res.json();
-    //             throw new Error(errorData.detail || "Login failed");
-    //         }
-
-    //         const data = await res.json();
-    //         const { user: userData, access } = data;
-
-    //         localStorage.setItem("token", access);
-    //         localStorage.setItem("user_details", JSON.stringify(userData));
-
-    //         if (userData?.is_recptionstaff) {
-    //             navigate("/reception-dashboard");
-    //         } else if (userData?.is_candiate) {
-    //             navigate("/public-dashboard");
-    //         } else if (userData?.is_superuser || userData?.is_staff) {
-    //             navigate("/admindasboard");
-    //         }
-    //         if{
-    //             navigate("/");
-    //         }
-    //     } catch (err) {
-    //         setErrorMsg(err.message);
-    //         fetchCaptcha();
-    //     }
-    // };
+   
 const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -132,7 +95,7 @@ const handleSubmit = async (e) => {
 
                         {errorMsg && <div className="error-message">{errorMsg}</div>}
 
-                        <form onSubmit={handleSubmit} id="loginForm">
+                        <form onSubmit={handleSubmit} id="loginForm" style={{ marginLeft: '10%', marginRight: '10%' }}>
                             <div className="form-control-group">
                                 <label className="form-label" htmlFor="username">Username</label>
                                 <input

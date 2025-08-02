@@ -30,7 +30,7 @@ const SidePanel = ({ onMenuClick }) => {
             <li onClick={() => onMenuClick('menu-item-4')}>Add Complaint </li>
             <li onClick={() => onMenuClick('menu-item-5')}>View Complaint</li>
             <li onClick={() => onMenuClick('menu-item-6')}>Feedback</li>
-            <li onClick={() => onMenuClick('menu-item-7')}>Jhar-Sewa Application</li>
+            {/* <li onClick={() => onMenuClick('menu-item-7')}>Jhar-Sewa Application</li> */}
             {/* <li onClick={() => onMenuClick('menu-item-1')}>Apply Application Part I</li>
             <li onClick={() => onMenuClick('menu-item-2')}>Apply Application Part II</li>
             <li onClick={() => onMenuClick('menu-item-3')}>Print Application</li> */}

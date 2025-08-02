@@ -3,17 +3,17 @@ import Header from '../Header/Header';
 import './VleDashboard.css';
 import SidePanel from '../SidePanel/SidePanel';
 import { useNavigate } from 'react-router-dom';
-import JobApplicationForm from '../JobForm/JobFrom';
-import ImageSignatureForm from '../UploadFile/UploadFile';
+// import JobApplicationForm from '../JobForm/JobFrom';
+// import ImageSignatureForm from '../UploadFile/UploadFile';
 import jwtDecode from 'jwt-decode';
 import Menubar from '../HeaderMenu/HeaderMenu';
-import SideApplicantList from '../SidePannelApli/SidePannelApli';
-import VleDefaultDashboard from '../VleDefaultDashboard/VleDefaultDashboard';
+// import SideApplicantList from '../SidePannelApli/SidePannelApli';
+// import VleDefaultDashboard from '../VleDefaultDashboard/VleDefaultDashboard';
 import AddComplaint from '../AddComplaint/AddComplaint';
 import UserProfile from '../Profile/Profile';
 import UpdatePassword from '../PasswordUpdate/PasswordUpdate';
 import DisplayComplaints from '../DisplayComplaints/DisplayComplaints';
-import AdminSidePanel from '../AdminSidePanel/AdminSidePanel';
+// import AdminSidePanel from '../AdminSidePanel/AdminSidePanel';
 import WriteFeedback from '../VleFeedback/VleFeedback';
 import AdminDefaultDashboard from '../AdminDefaultDashboard/AdminDefaultDashboard';
 const VleLayout = () => {
@@ -82,16 +82,6 @@ const VleLayout = () => {
         return <DisplayComplaints/>;
       case 'menu-item-6':
         return <WriteFeedback/>;
-      case 'menu-item-7':
-        return <JobApplicationForm/>;
-        // return (
-        //   <div style={{ alignItems: 'center' }}>
-        //     <ApplicantProfile />
-        //     <button onClick={handlePrint} style={{ marginLeft: '25%', width: '50%' }}>
-        //       Print
-        //     </button>
-        //   </div>
-        // );
       default:
         return <AdminDefaultDashboard />;
     }
