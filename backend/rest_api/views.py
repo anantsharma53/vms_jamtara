@@ -930,6 +930,10 @@ class ComplaintListView(APIView):
         start_date = query_params.get('start_date')
         end_date = query_params.get('end_date')
         status = query_params.get('status')
+        is_jantadarbar_complain = query_params.get('is_jantadarbar_complain')
+
+        if is_jantadarbar_complain and is_jantadarbar_complain.lower() == 'true':
+            complaints = complaints.filter(is_jantadarbar_complain=True)
 
         if complaint_id:
             complaints = complaints.filter(id=complaint_id)
@@ -1097,7 +1101,7 @@ class ComplaintCountAPIView(APIView):
         if user.is_staff or user.is_superuser or user.is_recptionstaff:
             # Staff or superusers see all complaints
             complaints = Complaint.objects.all()
-        elif hasattr(user, 'is_candidate') and user.is_candidate:
+        elif hasattr(user, 'is_candidate') and user.is_candidate or user.is_jantadarbar:
             # Candidates see only their related complaints
             complaints = Complaint.objects.filter(user=user)
         else:

@@ -62,7 +62,10 @@ const handleSubmit = async (e) => {
             navigate("/public-dashboard");
         } else if (userData?.is_superuser || userData?.is_staff) {
             navigate("/admindasboard");
-        } else {
+        } else if (userData?.is_jantadarbar) {
+            navigate("/reception-dashboard");
+        } else
+            {
             navigate("/");  // fallback for any other user
         }
 
