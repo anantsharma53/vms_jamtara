@@ -3,7 +3,7 @@ import "./DisplayComplaints.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleLeft, faAngleDoubleRight, faFilter, faPrint } from '@fortawesome/free-solid-svg-icons';
 import ComplaintReceipt from "../ComplaintReceipt/ComplaintReceipt";
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 const DisplayComplaints = () => {
   const [departments, setDepartments] = useState([]);
   const [showReceipt, setShowReceipt] = useState(false);
@@ -200,12 +200,25 @@ const DisplayComplaints = () => {
                   <a href={`http://127.0.0.1:8000${complaint.document}`} target="_blank" rel="noopener noreferrer">View</a>
                 )}
               </td>
-              <td>
-                <Link to={`/complaints/${complaint.id}`} className="view-details-link">
-                  View Details</Link>
-                <button onClick={() => handleSeeResolution(complaint.id)}>See</button>
-                <button onClick={() => handleViewReceipt(complaint.id)}>Print</button>
-                {userRole === "reception" && <button onClick={() => handleDelete(complaint.id)}>Delete</button>}
+              <td >
+                {/* <Link to={`/complaints/${complaint.id}`} className="view-details-link">
+                  View Details</Link> */}
+                <div className="complaint-actions">
+                  <button className="view-btn" onClick={() => window.open(`/complaints/${complaint.id}`, '_blank')}>View Details</button>
+                  <button className="resolution-btn" onClick={() => handleSeeResolution(complaint.id)} disabled={!complaint.resolution}
+                    style={{
+                      backgroundColor: !complaint.resolution ? '#cccccc' : '#9b59b6',
+                      color: !complaint.resolution ? '#666666' : 'white',
+                      cursor: !complaint.resolution ? 'not-allowed' : 'pointer',
+                      boxShadow: !complaint.resolution ? 'none' : '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      transform: 'none',
+                      opacity: !complaint.resolution ? 0.7 : 1,
+                    }}
+                  >See Resolution Details</button>
+                  <button className="receipt-btn" onClick={() => handleViewReceipt(complaint.id)}>Print Complain Recepit</button>
+                  <button className="history-btn" onClick={() => window.open(`/complaints/${complaint.id}/history`, '_blank')}>History</button>
+                  
+                </div>
               </td>
             </tr>
           ))}
@@ -226,7 +239,7 @@ const DisplayComplaints = () => {
         </div>
       )}
 
-      {showResolutionModal &&  (
+      {showResolutionModal && (
         <div className="modal-overlay" onClick={() => setShowResolutionModal(false)}>
           <div className="resolution-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Resolution for {selectedComplaint}</h3>
@@ -238,7 +251,7 @@ const DisplayComplaints = () => {
 
       {showReceipt && receiptData && (
         <div className="modal-overlay" onClick={() => setShowReceipt(false)}>
-        <ComplaintReceipt complaintData={receiptData} onClose={() => setShowReceipt(false)} /></div>
+          <ComplaintReceipt complaintData={receiptData} onClose={() => setShowReceipt(false)} /></div>
       )}
     </div>
   );

@@ -237,6 +237,13 @@ const AdminComplaints = () => {
                     </label>
                   </>
                 )}
+                {/* Add this button for viewing history */}
+                <button
+                  className="history-btn"
+                  onClick={() => window.open(`/complaints/${complaint.id}/history`, '_blank')}
+                >
+                  View History
+                </button>
               </td>
 
             </tr>

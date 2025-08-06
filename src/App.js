@@ -10,6 +10,7 @@ import ComplaintReceipt from './components/ComplaintReceipt/ComplaintReceipt';
 import ComplaintDetails from './components/ComplainDetail/ComplaintDetails';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 import ResetPassword from './components/ResetPassword/ResetPassword';
+import ComplaintHistory from './components/ComplaintHistory/ComplaintHistory';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/complaints/:id" element={<ComplaintDetails />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
+        <Route path="/complaints/:id/history" element={<ComplaintHistory />} />
       </Routes>
     </BrowserRouter>
   );

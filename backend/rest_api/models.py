@@ -173,13 +173,35 @@ class ComplaintImage(models.Model):
 #     def __str__(self):
 #         return self.name
 
+# class ComplaintAction(models.Model):
+#     complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, related_name="actions")
+#     performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+#     action = models.CharField(max_length=50)  # e.g., accepted, rejected, forwarded, disposed
+#     remarks = models.TextField(null=True, blank=True)
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#     to_department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
+
+#     def __str__(self):
+#         return f"{self.action} on {self.complaint.id} by {self.performed_by}"
 class ComplaintAction(models.Model):
+    ACTION_CHOICES = [
+        ('forwarded', 'Forwarded'),
+        ('rejected', 'Rejected'),
+        ('reassigned', 'Reassigned'),
+        ('accepted', 'Accepted'),
+        ('disposed', 'Disposed'),
+        ('admin_review', 'Admin Review'),
+    ]
+    
     complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, related_name="actions")
     performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    action = models.CharField(max_length=50)  # e.g., accepted, rejected, forwarded, disposed
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
     remarks = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     to_department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL)
+    # New fields
+    from_department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.SET_NULL, related_name='actions_from')
+    action_details = models.JSONField(null=True, blank=True)  # Store additional context
 
     def __str__(self):
         return f"{self.action} on {self.complaint.id} by {self.performed_by}"

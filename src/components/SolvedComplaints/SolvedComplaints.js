@@ -289,7 +289,7 @@ const SolvedComplaints = () => {
                     </span>
                   </div>
                 ) : (
-                  <button
+                  <><button
                     className="accept-button"
                     onClick={() => handleAcceptOpenModal(complaint.id)}
                     disabled={complaint.status === "disposed" || complaint.resolution != null}
@@ -312,6 +312,12 @@ const SolvedComplaints = () => {
                   >
                     Add Resolution
                   </button>
+                  <button
+                  className="history-btn"
+                  onClick={() => window.open(`/complaints/${complaint.id}/history`, '_blank')}
+                >
+                  View History
+                </button></>
                 )}
               </td>
 

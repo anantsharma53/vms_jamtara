@@ -1131,6 +1131,199 @@ class ComplaintCountAPIView(APIView):
 
 
 
+# class ComplaintAcceptView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def patch(self, request, pk):
+#         complaint = get_object_or_404(Complaint, pk=pk)
+#         if request.user.department_id != complaint.category:
+#             return Response({"error": "Unauthorized"}, status=403)
+
+#         complaint.status = 'accepted'
+#         complaint.accept_remarks = request.data.get('remarks')
+#         complaint.save()
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="accepted",
+#             remarks=request.data.get('remarks')
+#         )
+#         send_email_with_resend(
+#             complaint,
+#             "✅ Complaint Accepted",
+#             f"<p>Your complaint has been <strong>accepted</strong> by the department.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
+#         )
+
+#         return Response({"message": "Complaint accepted and accept remarks added."})
+
+
+# class ComplaintRejectView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request, pk):
+#         complaint = get_object_or_404(Complaint, pk=pk)
+#         complaint.status = 'admin_review'
+#         complaint.rejection_remarks = request.data.get('remarks')
+#         complaint.save()
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="rejected",
+#             remarks=request.data.get('remarks')
+#         )
+#         send_email_with_resend(
+#             complaint,
+#             "⚠️ Complaint Sent for Admin Review",
+#             f"<p>Your complaint has been <strong>sent to the district administrator</strong> for reassignment.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
+#         )
+
+#         return Response({"message": "Complaint sent to admin for reassignment."})
+
+
+# class ComplaintForwardView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request, pk):
+#         complaint = get_object_or_404(Complaint, pk=pk)
+#         to_dept = get_object_or_404(Department, pk=request.data.get("to_department"))
+
+#         complaint.status = 'forwarded'
+#         complaint.forwarded_to = to_dept
+#         complaint.forwarded_by = request.user
+#         complaint.forward_remarks = request.data.get("remarks")
+#         complaint.save()
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="forwarded",
+#             to_department=to_dept,
+#             remarks=request.data.get("remarks")
+#         )
+#         send_email_with_resend(
+#             complaint,
+#             "➡️ Complaint Forwarded",
+#             f"<p>Your complaint has been <strong>forwarded</strong> to the concerned department: <strong>{to_dept.name}</strong>.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
+#         )
+
+#         return Response({"message": "Complaint forwarded to subsidiary office."})
+
+
+# class ComplaintResolutionAddView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     parser_classes = [MultiPartParser, FormParser]
+
+#     def patch(self, request, pk):
+#         complaint = get_object_or_404(Complaint, pk=pk)
+
+#         if request.user.department_id != complaint.category:
+#             return Response({"error": "Unauthorized"}, status=403)
+
+#         complaint.status = 'accepted'
+#         complaint.resolution = request.data.get('remarks')
+#         complaint.save()
+
+#         # Save resolution images with type='resolution'
+#         for img in request.FILES.getlist('images'):
+#             ComplaintImage.objects.create(
+#                 complaint=complaint,
+#                 image=img,
+#                 image_type='resolution'
+#             )
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="accepted",
+#             remarks=request.data.get('remarks')
+#         )
+
+#         send_email_with_resend(
+#             complaint,
+#             "✅ Complaint Resolved",
+#             f"<p>Your complaint has been <strong>resolved</strong>.</p><p><em>Resolution:</em> {escape(request.data.get('remarks'))}</p>"
+#         )
+
+#         return Response({"message": "Complaint Resolution added."})
+
+# class ComplaintDisposeView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request, pk):
+#         complaint = get_object_or_404(Complaint, pk=pk)
+#         if not request.user.is_superuser:
+#             return Response({"error": "Only admin can dispose complaint."}, status=403)
+
+#         complaint.status = 'disposed'
+#         complaint.save()
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="disposed",
+#             remarks="Marked as disposed"
+#         )
+#         send_email_with_resend(
+#             complaint,
+#             "🗃️ Complaint Disposed",
+#             "<p>Your complaint has been <strong>disposed</strong> by the district administrator.</p>"
+#         )
+
+#         return Response({"message": "Complaint marked as disposed by admin."})
+# class ComplaintReassignByAdminView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request, pk):
+#         if not request.user.is_superuser:
+#             return Response({"error": "Unauthorized"}, status=403)
+
+#         complaint = get_object_or_404(Complaint, pk=pk)
+#         new_dept = get_object_or_404(Department, pk=request.data.get("to_department"))
+
+#         complaint.department = new_dept
+#         complaint.category=new_dept.id
+#         complaint.resolution = None  # Reset resolution when reassigning
+#         complaint.status = "pending"
+#         complaint.accept_remarks = None  # Reset accept remarks
+#         complaint.rejection_remarks = None
+#         complaint.forward_remarks = request.data.get("remarks", "")
+#         complaint.save()
+
+#         ComplaintAction.objects.create(
+#             complaint=complaint,
+#             performed_by=request.user,
+#             action="reassigned by admin",
+#             remarks=request.data.get("remarks"),
+#             to_department=new_dept
+#         )
+#         send_email_with_resend(
+#             complaint,
+#             "🔄 Complaint Reassigned",
+#             f"<p>Your complaint has been <strong>reassigned</strong> to a new department: <strong>{new_dept.name}</strong>.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
+#         )
+
+
+#         return Response({"message": "Complaint reassigned to another department."})
+
+
+    
+
+class ComplaintHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, complaint_id):
+        complaint = get_object_or_404(Complaint, id=complaint_id)
+        
+        # Check permissions: user must be owner or staff
+        if complaint.user != request.user and not (request.user.is_staff or request.user.is_superuser):
+             return Response({"error": "Permission denied"}, status=403)
+
+        actions = ComplaintAction.objects.filter(complaint=complaint).order_by('-timestamp')
+        serializer = ComplaintActionSerializer(actions, many=True)
+        return Response(serializer.data)
+    
 class ComplaintAcceptView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1139,6 +1332,9 @@ class ComplaintAcceptView(APIView):
         if request.user.department_id != complaint.category:
             return Response({"error": "Unauthorized"}, status=403)
 
+        current_status = complaint.status
+        current_department = complaint.department
+        
         complaint.status = 'accepted'
         complaint.accept_remarks = request.data.get('remarks')
         complaint.save()
@@ -1147,15 +1343,30 @@ class ComplaintAcceptView(APIView):
             complaint=complaint,
             performed_by=request.user,
             action="accepted",
-            remarks=request.data.get('remarks')
+            remarks=request.data.get('remarks'),
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "department": current_department.name if current_department else None,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status},
+                    "accept_remarks": request.data.get('remarks')
+                }
+            }
         )
+
         send_email_with_resend(
             complaint,
             "✅ Complaint Accepted",
             f"<p>Your complaint has been <strong>accepted</strong> by the department.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
         )
 
-        return Response({"message": "Complaint accepted and accept remarks added."})
+        return Response({
+            "message": "Complaint accepted and accept remarks added.",
+            "action": "accepted",
+            "timestamp": timezone.now().isoformat()
+        })
 
 
 class ComplaintRejectView(APIView):
@@ -1163,6 +1374,9 @@ class ComplaintRejectView(APIView):
 
     def post(self, request, pk):
         complaint = get_object_or_404(Complaint, pk=pk)
+        current_status = complaint.status
+        current_department = complaint.department
+        
         complaint.status = 'admin_review'
         complaint.rejection_remarks = request.data.get('remarks')
         complaint.save()
@@ -1171,15 +1385,30 @@ class ComplaintRejectView(APIView):
             complaint=complaint,
             performed_by=request.user,
             action="rejected",
-            remarks=request.data.get('remarks')
+            remarks=request.data.get('remarks'),
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "department": current_department.name if current_department else None,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status},
+                    "rejection_remarks": request.data.get('remarks')
+                }
+            }
         )
+
         send_email_with_resend(
             complaint,
             "⚠️ Complaint Sent for Admin Review",
             f"<p>Your complaint has been <strong>sent to the district administrator</strong> for reassignment.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
         )
 
-        return Response({"message": "Complaint sent to admin for reassignment."})
+        return Response({
+            "message": "Complaint sent to admin for reassignment.",
+            "action": "rejected",
+            "timestamp": timezone.now().isoformat()
+        })
 
 
 class ComplaintForwardView(APIView):
@@ -1188,6 +1417,8 @@ class ComplaintForwardView(APIView):
     def post(self, request, pk):
         complaint = get_object_or_404(Complaint, pk=pk)
         to_dept = get_object_or_404(Department, pk=request.data.get("to_department"))
+        current_status = complaint.status
+        current_department = complaint.department
 
         complaint.status = 'forwarded'
         complaint.forwarded_to = to_dept
@@ -1199,16 +1430,33 @@ class ComplaintForwardView(APIView):
             complaint=complaint,
             performed_by=request.user,
             action="forwarded",
+            remarks=request.data.get("remarks"),
             to_department=to_dept,
-            remarks=request.data.get("remarks")
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "previous_department": current_department.name if current_department else None,
+                "new_department": to_dept.name,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status},
+                    "forwarded_to": to_dept.name,
+                    "forward_remarks": request.data.get("remarks")
+                }
+            }
         )
+
         send_email_with_resend(
             complaint,
             "➡️ Complaint Forwarded",
             f"<p>Your complaint has been <strong>forwarded</strong> to the concerned department: <strong>{to_dept.name}</strong>.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
         )
 
-        return Response({"message": "Complaint forwarded to subsidiary office."})
+        return Response({
+            "message": "Complaint forwarded to subsidiary office.",
+            "action": "forwarded",
+            "timestamp": timezone.now().isoformat()
+        })
 
 
 class ComplaintResolutionAddView(APIView):
@@ -1217,6 +1465,8 @@ class ComplaintResolutionAddView(APIView):
 
     def patch(self, request, pk):
         complaint = get_object_or_404(Complaint, pk=pk)
+        current_status = complaint.status
+        current_department = complaint.department
 
         if request.user.department_id != complaint.category:
             return Response({"error": "Unauthorized"}, status=403)
@@ -1225,19 +1475,34 @@ class ComplaintResolutionAddView(APIView):
         complaint.resolution = request.data.get('remarks')
         complaint.save()
 
-        # Save resolution images with type='resolution'
+        image_files = []
         for img in request.FILES.getlist('images'):
-            ComplaintImage.objects.create(
+            image_file = ComplaintImage.objects.create(
                 complaint=complaint,
                 image=img,
                 image_type='resolution'
             )
+            image_files.append({
+                "url": image_file.image.url,
+                "name": image_file.image.name
+            })
 
         ComplaintAction.objects.create(
             complaint=complaint,
             performed_by=request.user,
             action="accepted",
-            remarks=request.data.get('remarks')
+            remarks=request.data.get('remarks'),
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "department": current_department.name if current_department else None,
+                "resolution_images": image_files,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status},
+                    "resolution": request.data.get('remarks')
+                }
+            }
         )
 
         send_email_with_resend(
@@ -1246,7 +1511,12 @@ class ComplaintResolutionAddView(APIView):
             f"<p>Your complaint has been <strong>resolved</strong>.</p><p><em>Resolution:</em> {escape(request.data.get('remarks'))}</p>"
         )
 
-        return Response({"message": "Complaint Resolution added."})
+        return Response({
+            "message": "Complaint Resolution added.",
+            "action": "resolved",
+            "timestamp": timezone.now().isoformat()
+        })
+
 
 class ComplaintDisposeView(APIView):
     permission_classes = [IsAuthenticated]
@@ -1256,6 +1526,9 @@ class ComplaintDisposeView(APIView):
         if not request.user.is_superuser:
             return Response({"error": "Only admin can dispose complaint."}, status=403)
 
+        current_status = complaint.status
+        current_department = complaint.department
+
         complaint.status = 'disposed'
         complaint.save()
 
@@ -1263,15 +1536,31 @@ class ComplaintDisposeView(APIView):
             complaint=complaint,
             performed_by=request.user,
             action="disposed",
-            remarks="Marked as disposed"
+            remarks="Marked as disposed",
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "department": current_department.name if current_department else None,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status}
+                }
+            }
         )
+
         send_email_with_resend(
             complaint,
             "🗃️ Complaint Disposed",
             "<p>Your complaint has been <strong>disposed</strong> by the district administrator.</p>"
         )
 
-        return Response({"message": "Complaint marked as disposed by admin."})
+        return Response({
+            "message": "Complaint marked as disposed by admin.",
+            "action": "disposed",
+            "timestamp": timezone.now().isoformat()
+        })
+
+
 class ComplaintReassignByAdminView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1281,12 +1570,14 @@ class ComplaintReassignByAdminView(APIView):
 
         complaint = get_object_or_404(Complaint, pk=pk)
         new_dept = get_object_or_404(Department, pk=request.data.get("to_department"))
+        current_status = complaint.status
+        current_department = complaint.department
 
         complaint.department = new_dept
-        complaint.category=new_dept.id
-        complaint.resolution = None  # Reset resolution when reassigning
+        complaint.category = new_dept.id
+        complaint.resolution = None
         complaint.status = "pending"
-        complaint.accept_remarks = None  # Reset accept remarks
+        complaint.accept_remarks = None
         complaint.rejection_remarks = None
         complaint.forward_remarks = request.data.get("remarks", "")
         complaint.save()
@@ -1294,15 +1585,34 @@ class ComplaintReassignByAdminView(APIView):
         ComplaintAction.objects.create(
             complaint=complaint,
             performed_by=request.user,
-            action="reassigned by admin",
+            action="reassigned",
             remarks=request.data.get("remarks"),
-            to_department=new_dept
+            to_department=new_dept,
+            from_department=current_department,
+            action_details={
+                "previous_status": current_status,
+                "new_status": complaint.status,
+                "previous_department": current_department.name if current_department else None,
+                "new_department": new_dept.name,
+                "changes": {
+                    "status": {"from": current_status, "to": complaint.status},
+                    "department": {"from": current_department.name if current_department else None, "to": new_dept.name},
+                    "forward_remarks": request.data.get("remarks"),
+                    "resolution": "cleared",
+                    "accept_remarks": "cleared",
+                    "rejection_remarks": "cleared"
+                }
+            }
         )
+
         send_email_with_resend(
             complaint,
             "🔄 Complaint Reassigned",
             f"<p>Your complaint has been <strong>reassigned</strong> to a new department: <strong>{new_dept.name}</strong>.</p><p><em>Remarks:</em> {escape(request.data.get('remarks'))}</p>"
         )
 
-
-        return Response({"message": "Complaint reassigned to another department."})
+        return Response({
+            "message": "Complaint reassigned to another department.",
+            "action": "reassigned",
+            "timestamp": timezone.now().isoformat()
+        })

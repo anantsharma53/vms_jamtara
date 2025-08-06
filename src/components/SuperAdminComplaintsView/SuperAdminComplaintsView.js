@@ -385,6 +385,13 @@ const SuperAdminComplaintsView = () => {
                   />{" "}
                   Dispose
                 </label>
+
+                <button
+                  className="history-btn"
+                  onClick={() => window.open(`/complaints/${c.id}/history`, '_blank')}
+                >
+                  View History
+                </button>
               </td>
             </tr>
           ))}

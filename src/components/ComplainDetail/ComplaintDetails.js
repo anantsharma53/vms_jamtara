@@ -8,7 +8,7 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons'; // Import specif
 
 import './ComplaintDetails.css'; // Make sure this CSS file exists and is linked
 
-const ComplaintDetails = () => {
+const ComplaintDetails = ({ onClose }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [complaint, setComplaint] = useState(null);
@@ -210,8 +210,11 @@ const ComplaintDetails = () => {
     return (
         <div className="complaint-details-container">
             <div className="top-buttons">
-                <button onClick={() => navigate(-1)} className="back-button">
+                {/* <button onClick={() => navigate(-1)} className="back-button">
                     &larr; Back to Complaints
+                </button> */}
+                <button className="close-btn" onClick={() => window.close()}>
+                    &larr; Close
                 </button>
                 <button onClick={downloadComplaintDetailsPdf} className="download-button">
                     <FontAwesomeIcon icon={faDownload} /> Download Details PDF
@@ -251,8 +254,16 @@ const ComplaintDetails = () => {
                     <div className="detail-item">
                         <strong>Submission Date:</strong> {new Date(complaint.created_at).toLocaleString()}
                     </div>
-                    <div className="detail-item">
+                    {/* <div className="detail-item">
                         <strong>Status:</strong> <span className={`status-${complaint.status.toLowerCase().replace(/_/g, '-')}`}>{complaint.status.replace(/_/g, ' ').toUpperCase()}</span>
+                    </div> */}
+                    <div className="detail-item">
+                        <strong>Status:</strong>{' '}
+                        <span className={`status-${complaint.status.toLowerCase().replace(/_/g, '-')}`}>
+                            {complaint.status.toLowerCase() === 'accepted'
+                                ? 'IN PROCESS'
+                                : complaint.status.replace(/_/g, ' ').toUpperCase()}
+                        </span>
                     </div>
 
                     <div className="detail-item">

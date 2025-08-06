@@ -265,3 +265,26 @@ textarea {
 .radio-actions .forward-icon {
   color: #ffc107;
 }
+.history-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+  width: 100%;
+}
+
+.history-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Adjust the radio actions container to accommodate the new button */
+.radio-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

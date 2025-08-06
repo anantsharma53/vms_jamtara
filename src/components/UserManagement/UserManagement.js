@@ -196,11 +196,11 @@ const UserManagement = () => {
               <td>{user.mobile_number}</td>
               <td>{getDepartmentNameFromList(user.department)}</td>
               <td>
-                {user.is_staff && "Staff "}
-                {user.is_superuser && "SuperUser "}
+                {user.is_staff && "Officer"}
+                {user.is_superuser && "Deputy Commissioner "}
                 {user.is_recptionstaff && "Reception "}
-                {user.is_candidate && "Candidate"} 
-                {user.is_jantadarbar&& " Janta Darbar ID"}
+                {user.is_candidate && "Applicant"} 
+                {user.is_jantadarbar&& " Janta Darbar"}
               </td>
               <td>
                 <button className="edit-btn" onClick={() => openModal(user)}>

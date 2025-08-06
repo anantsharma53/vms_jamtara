@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from .views import ( SignUpView, SignInView, JobApplicationAPIView, ApplicantFileUploadAPIView,ApplicantByPostAPIView,ComplaintDetailView,ComplaintListView,JharsewaApplicantAPIView,ApplicantByPostAPIView,
                     AllUserInformationAPIView,UserInformationAPIView,ComplaintView,FeedbackView,UpdatePasswordAPIView,AdminComplaintView,SearchAdmitCardView,ComplaintCountAPIView,ComplaintResolutionView,ApplicantInformationView
                     ,DepartmentListCreateAPIView,DepartmentDetailAPIView,ComplaintAcceptView,ComplaintRejectView,ComplaintForwardView,ComplaintDisposeView,ComplaintReassignByAdminView,
-                    SolvedComplaintsView,ComplaintResolutionAddView,RequestPasswordResetView,ResetPasswordConfirmView,generate_captcha)
+                    SolvedComplaintsView,ComplaintResolutionAddView,RequestPasswordResetView,ResetPasswordConfirmView,generate_captcha,ComplaintHistoryView)
 
 
 urlpatterns = [
@@ -43,6 +43,7 @@ urlpatterns = [
     path('complaint/<int:pk>/dispose/', ComplaintDisposeView.as_view(), name='complaint-dispose'),
     path('complaint/<int:pk>/reassign/', ComplaintReassignByAdminView.as_view(), name='complaint-reassign'),
     path('generate-captcha/', generate_captcha),
+    path('complaints/<int:complaint_id>/history/', ComplaintHistoryView.as_view(), name='complaint-history'),
     # Add other URL patterns as needed
   
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

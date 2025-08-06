@@ -51,19 +51,35 @@ class ComplaintSerializer(serializers.ModelSerializer):
             'complaint_text', 'resolution', 'feedback', 'created_at',
             'images', 'department', 'status',
             'forwarded_to', 'forward_remarks', 'rejection_remarks','accept_remarks','rejection_remarks',
-            'forward_remarks',
+            'forward_remarks','is_jantadarbar_complain',
         ]
         extra_kwargs = {
             'user': {'required': False},
             'resolution': {'required': False},
             'feedback': {'required': False},
+            'is_jantadarbar_complain': {'required': False},
+            'correspondentAddress': {'required': False},
+            
         }
 
+# class ComplaintActionSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ComplaintAction
+#         fields = '__all__'
 class ComplaintActionSerializer(serializers.ModelSerializer):
+    performed_by_name = serializers.CharField(source='performed_by.name', read_only=True)
+    to_department_name = serializers.CharField(source='to_department.name', read_only=True)
+    from_department_name = serializers.CharField(source='from_department.name', read_only=True)
+
     class Meta:
         model = ComplaintAction
-        fields = '__all__'
-
+        fields = [
+            'id', 'action', 'remarks', 'timestamp', 
+            'performed_by', 'performed_by_name',
+            'to_department', 'to_department_name',
+            'from_department', 'from_department_name',
+            'action_details'
+        ]
 
 class FeedbackSerializer(serializers.Serializer):
     feedback = serializers.CharField(required=True, max_length=10000)
